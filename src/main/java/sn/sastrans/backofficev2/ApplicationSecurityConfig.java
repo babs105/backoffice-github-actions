@@ -58,7 +58,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/security/user/**").permitAll()
-                .antMatchers("/").hasAnyAuthority("USER","ADMIN")
+//                .antMatchers("/").hasAnyAuthority("USER","ADMIN")
                 .antMatchers("/parcauto/**").hasAnyAuthority("USER_PARC","ADMIN")
                 .antMatchers("/carburant/**").hasAnyAuthority("USER_CARBURANT","ADMIN")
                 .antMatchers("/trace/**").hasAnyAuthority("USER_TRACE","ADMIN")
