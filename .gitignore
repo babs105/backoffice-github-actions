@@ -13,6 +13,11 @@ target/
 .springBeans
 .sts4-cache
 
+
+/node_modules
+/backofficefront/node_modules
+/backofficefront/build
+package-lock.json
 ### IntelliJ IDEA ###
 .idea
 *.iws

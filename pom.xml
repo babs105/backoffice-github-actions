@@ -16,8 +16,7 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>1.8</java.version>
-		<frontend-src-dir>${project.basedir}/src/main/backofficefront</frontend-src-dir>
-
+		<frontend-src-dir>${project.basedir}/backofficefront</frontend-src-dir>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -107,11 +106,6 @@
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
-				<version>1.6</version>
-<!--				<groupId>com.github.eirslett</groupId>-->
-<!--				<artifactId>frontend-maven-plugin</artifactId>-->
-<!--				&lt;!&ndash; Use the latest released version:-->
-<!--                https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ &ndash;&gt;-->
 <!--				<version>1.6</version>-->
 				<executions>
 					<execution>
@@ -141,8 +135,8 @@
 				<configuration>
 					<!-- Latest LTS -->
 <!--					<nodeVersion>v18.14.0</nodeVersion>-->
-<!--					<nodeVersion>v14.16.0</nodeVersion>-->
-					<nodeVersion>v12.12.0</nodeVersion>
+					<nodeVersion>v14.16.0</nodeVersion>
+<!--					<nodeVersion>v12.12.0</nodeVersion>-->
 					<workingDirectory>${frontend-src-dir}</workingDirectory>
 					<installDirectory>${project.build.directory}</installDirectory>
 				</configuration>
