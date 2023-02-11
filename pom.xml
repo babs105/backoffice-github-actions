@@ -11,7 +11,7 @@
 	<groupId>sn.sastrans</groupId>
 	<artifactId>backofficev2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+<!--	<packaging>war</packaging>-->
 	<name>backofficev2</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -142,6 +142,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>${project.artifactId}</finalName>
 	</build>
 
 
