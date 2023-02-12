@@ -73,7 +73,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/report/carburant/**").hasAnyAuthority("ADMIN_PARA_CARBU","ADMIN")
                 .antMatchers("/dashboard/carburant/**").hasAnyAuthority("USER_CARBURANT","ADMIN")
                 .antMatchers("/dashboard/trace/**").hasAnyAuthority("USER_TRACE","ADMIN")
-
 // .antMatchers("/**").denyAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
