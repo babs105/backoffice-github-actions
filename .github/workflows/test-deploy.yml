@@ -1,24 +1,24 @@
-name: docker-compose-actions-workflow
-on: push
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Build the stack
-        run: docker-compose build
-
-      - name: Build & push Docker image
-        uses: mr-smithers-excellent/docker-build-push@v5
-        with:
-          image: babs105/backofficev2
-          tags: latest
-          registry: docker.io
-          dockerfile: Dockerfile
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_PASS  }}
+#name: docker-compose-actions-workflow
+#on: push
+#jobs:
+#  test:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Build the stack
+#        run: docker-compose build
+#
+#      - name: Build & push Docker image
+#        uses: mr-smithers-excellent/docker-build-push@v5
+#        with:
+#          image: babs105/backofficev2
+#          tags: latest
+#          registry: docker.io
+#          dockerfile: Dockerfile
+#          username: ${{ secrets.DOCKER_HUB_USER }}
+#          password: ${{ secrets.DOCKER_HUB_PASS  }}
 
 
 #name: project cicd flow
@@ -59,51 +59,50 @@ jobs:
 #          password: ${{ secrets.DOCKER_HUB_PASS  }}
 
 
-#on:
-#  push:
-#    branches:
-#      - main
-#
-#jobs:
-#  backoffice_job:
-#    runs-on: ubuntu-latest
-#    name: A job to build and push docker
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v2
-#        id: runcmd
-#        with:
-#          arch: linux/x86_64
-#          distro: ubuntu18.04
-#
-#      - name: Set up JDK 1.8
-#        uses: actions/setup-java@v1
-#        with:
-#          java-version: '1.8'
-#          distribution: 'adopt'
-#          cache: maven
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  backoffice_job:
+    runs-on: ubuntu-latest
+    name: A job to build and push docker
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: '1.8'
+          distribution: 'adopt'
+          cache: maven
 
 #      - name: Build with Maven
 #        run: mvn clean package -Dmaven.test.skip=true
-#
-#      - name: Set up Docker Buildx
-#        uses: docker/setup-buildx-action@v1
-#
-#      - name: Login to DockerHub
-#        uses: docker/login-action@v1
-#        with:
-#          username: ${{ secrets.DOCKER_HUB_USER }}
-#          password: ${{ secrets.DOCKER_HUB_PASS }}
-#
-#      - name: Build and push
-#        uses: docker/build-push-action@v2
-#        with:
-#          context: .
+
+      - name: Build the stack
+        run: docker-compose build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_PASS }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
 #          file: ./Dockerfile
-#          pull: true
-#          push: true
-#          cache-from: type=registry,ref=babs105/backofficev2:latest
-#          cache-to: type=inline
-#          tags: babs105/backofficev2:latest
+          pull: true
+          push: true
+          cache-from: type=registry,ref=babs105/backofficev2:latest
+          cache-to: type=inline
+          tags: babs105/backofficev2:latest
 #          build-args: PROFILE=nectar,ARG2=test
 
