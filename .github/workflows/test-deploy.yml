@@ -47,7 +47,7 @@ jobs:
         run: mvn clean package -Dmaven.test.skip=true
 
       - name: Build Stack
-        run: docker-compose up -d
+        run: docker-compose build
 
       - name: Build & push Docker image
         uses: mr-smithers-excellent/docker-build-push@v5
