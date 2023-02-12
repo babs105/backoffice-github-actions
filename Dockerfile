@@ -14,10 +14,10 @@
 #
 
 ##
-FROM openjdk:8
-EXPOSE 8080
-ADD target/backofficev2.jar backofficev2.jar
-ENTRYPOINT ["java","-jar","/backofficev2.jar"]
+#FROM openjdk:8
+#EXPOSE 8080
+#ADD target/backofficev2.jar backofficev2.jar
+#ENTRYPOINT ["java","-jar","/backofficev2.jar"]
 
 
 
