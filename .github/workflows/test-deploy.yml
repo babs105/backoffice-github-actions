@@ -5,11 +5,15 @@ on:
 
 jobs:
   backoffice_job:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     name: A job to build and push docker
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        id: runcmd
+        with:
+          arch: armv7
+          distro: ubuntu18.04
 
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
