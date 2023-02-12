@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v2
         id: runcmd
         with:
-          arch: linux/x86_64
+          arch: linux/arm64/v8
           distro: ubuntu18.04
 
       - name: Set up JDK 1.8
