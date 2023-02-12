@@ -14,10 +14,10 @@
 #
 
 ##
-FROM openjdk:8
-EXPOSE 8080
-ADD target/backofficev2.jar backofficev2.jar
-ENTRYPOINT ["java","-jar","/backofficev2.jar"]
+#FROM openjdk:8
+#EXPOSE 8080
+#ADD target/backofficev2.jar backofficev2.jar
+#ENTRYPOINT ["java","-jar","/backofficev2.jar"]
 
 
 
@@ -32,10 +32,10 @@ ENTRYPOINT ["java","-jar","/backofficev2.jar"]
 #ENTRYPOINT ["java","-jar","/backoffice.jar"]
 
 
-#FROM maven:3.8.2-jdk-8
-#
-#WORKDIR /backofficev2
-#COPY . .
-#RUN mvn clean install -DskipTests
-#
-#CMD mvn spring-boot:run
+FROM maven:3.8.2-jdk-8
+
+WORKDIR /backofficev2
+COPY . .
+RUN mvn clean install -DskipTests
+
+CMD mvn spring-boot:run

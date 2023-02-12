@@ -15,9 +15,7 @@ target/
 
 
 /node_modules
-/backofficefront/node_modules
-/backofficefront/build
-package-lock.json
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
