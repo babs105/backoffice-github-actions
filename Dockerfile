@@ -1,16 +1,21 @@
-FROM openjdk:8-jre
-
-VOLUME /tmp
-# Add the built jar for docker image building
-ADD target/backofficev2.jar backofficev2.jar
-
-# Build a shell script because the ENTRYPOINT command doesn't like using ENV
-RUN echo "#!/bin/bash \n java -jar /backofficev2.jar" > ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh
-
-# Run the generated shell script.
-ENTRYPOINT ["./entrypoint.sh"]
+#FROM openjdk:8-jre
+#
+#VOLUME /tmp
+## Add the built jar for docker image building
+#ADD target/backofficev2.jar backofficev2.jar
+#
+## Build a shell script because the ENTRYPOINT command doesn't like using ENV
+#RUN echo "#!/bin/bash \n java -jar /backofficev2.jar" > ./entrypoint.sh
+#RUN chmod +x ./entrypoint.sh
+#
+## Run the generated shell script.
+#ENTRYPOINT ["./entrypoint.sh"]
+#EXPOSE 8080
+#
+FROM openjdk:8
 EXPOSE 8080
+ADD target/backofficev2.jar backofficev2.jar
+ENTRYPOINT ["java","-jar","/backofficev2.jar"]
 
 
 
