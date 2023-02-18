@@ -61,7 +61,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/").hasAnyAuthority("USER","ADMIN")
                 .antMatchers("/parcauto/**").hasAnyAuthority("USER_PARC","ADMIN")
                 .antMatchers("/carburant/**").hasAnyAuthority("USER_CARBURANT","ADMIN")
-                .antMatchers("/trace/**").hasAnyAuthority("USER_TRACE","ADMIN")
+                .antMatchers("/trace/**").hasAnyAuthority("USER","USER_TRACE","ADMIN")
 //                .antMatchers("/parameters/vehicle/vehicleByAffectation/*").hasAnyAuthority("USER_CARBURANT","ADMIN_PARA_VHL","ADMIN")
                 .antMatchers("/parameters/**").hasAnyAuthority("ADMIN_PARA_VHL","ADMIN")
                 .antMatchers("/paramrh/**").hasAnyAuthority("ADMIN_PARA_RH","ADMIN")

@@ -14,12 +14,18 @@
 #
 
 ##
+#FROM openjdk:8
+#EXPOSE 8080
+#ADD target/backofficev2.jar backofficev2.jar
+#ENTRYPOINT ["java","-jar","/backofficev2.jar"]
+
+
 FROM openjdk:8
 EXPOSE 8080
-ADD target/backofficev2.jar backofficev2.jar
-ENTRYPOINT ["java","-jar","/backofficev2.jar"]
-
-
+WORKDIR /app
+COPY target/backofficev2.jar backofficev2.jar
+ENV SPRING_PROFILES_ACTIVE=PROD
+CMD ["java", "-jar", "backofficev2.jar"]
 
 
 #FROM openjdk:8
