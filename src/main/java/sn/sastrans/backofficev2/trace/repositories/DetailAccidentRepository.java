@@ -9,7 +9,7 @@ import sn.sastrans.backofficev2.trace.models.DetailAccident;
 import java.util.Date;
 import java.util.List;
 
-public interface DetailAccidentRepository extends JpaRepository<DetailAccident,Integer> {
+public interface DetailAccidentRepository extends JpaRepository<DetailAccident,Integer>,DetailAccidentRepositoryCustom {
     @Query(value = "SELECT d FROM DetailAccident d WHERE concat(d.typeAccident,d.matriculeVhlImplique) LIKE %?1%",nativeQuery = false)
     Page<DetailAccident> findByKeyword(String keyword, Pageable pageable);
 

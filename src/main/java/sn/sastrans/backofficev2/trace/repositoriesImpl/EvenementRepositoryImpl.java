@@ -23,18 +23,18 @@ public class EvenementRepositoryImpl implements EvenementRepositoryCustom {
     public List<Evenement> searchEvenement(EventSearchDTO critere) {
         CriteriaBuilder cbuild = entityManager.getCriteriaBuilder();
         CriteriaQuery<Evenement> cquery = cbuild.createQuery(Evenement.class);
-        Root<Evenement> evenementRoot = cquery.from(Evenement.class);
+        Root<Evenement> evenementRoot = cquery.from(Evenement.class); // ou sera executer le query
 
         List<Predicate> predicates = new ArrayList<>();
 
         if(critere.getMatricule()!=null){
-            predicates.add(cbuild.equal(evenementRoot.get("matVehicule"),critere.getMatricule()));
+            predicates.add(cbuild.equal(evenementRoot.get("matVehicule"),critere.getMatricule())); //root methode
         }
         if(critere.getPka()!=null){
             predicates.add(cbuild.equal(evenementRoot.get("pkEvent"),critere.getPka()));
         }
 
-        cquery.where(predicates.toArray(new Predicate[0]));
+        cquery.where(predicates.toArray(new Predicate[0])); // convert predicat arraylist to array
 
         return entityManager.createQuery(cquery).getResultList();
     }

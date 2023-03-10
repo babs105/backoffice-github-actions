@@ -10,6 +10,6 @@ import sn.sastrans.backofficev2.trace.models.Evenement;
 
 @Repository
 public interface EvenementRepository extends JpaRepository<Evenement,Integer>,EvenementRepositoryCustom {
-    @Query(value = "SELECT e FROM Evenement e WHERE concat(e.dateEvent,e.natureEvent,e.matVehicule,e.etatEvent,e.localisation) LIKE %?1% ORDER BY e.dateEvent DESC ",nativeQuery = false)
+    @Query(value = "SELECT e FROM Evenement e WHERE concat(e.dateEvent,e.natureEvent,e.matVehicule,e.etatEvent,e.localisation,e.statutEvent) LIKE %?1% ORDER BY e.dateEvent DESC ",nativeQuery = false)
     Page<Evenement> findByKeyword(String keyword, Pageable pageable);
 }

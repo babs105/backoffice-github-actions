@@ -47,7 +47,7 @@ jobs:
       - name: Build and Test for TEST profile
         run: mvn clean test -Dspring.profiles.active=TEST
 
-  test-wit-db:
+  test-with-db-push-docker:
     needs: test-without-db
     runs-on: ubuntu-latest
 

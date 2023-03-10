@@ -69,6 +69,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/hr/**").hasAnyAuthority("USER_RH","ADMIN")
                 .antMatchers("/stock/**").hasAnyAuthority("USER_STOCK","ADMIN")
                 .antMatchers("/security/**").hasAuthority("SUPER_ADMIN")
+
                 .antMatchers("/report/trace/**").hasAnyAuthority("ADMIN_PARA_TRACE","ADMIN")
                 .antMatchers("/report/carburant/**").hasAnyAuthority("ADMIN_PARA_CARBU","ADMIN")
                 .antMatchers("/dashboard/carburant/**").hasAnyAuthority("USER_CARBURANT","ADMIN")

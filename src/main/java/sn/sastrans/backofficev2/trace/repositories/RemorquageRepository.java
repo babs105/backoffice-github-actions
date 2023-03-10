@@ -9,7 +9,7 @@ import sn.sastrans.backofficev2.trace.models.Remorquage;
 import java.util.Date;
 import java.util.List;
 
-public interface RemorquageRepository extends JpaRepository<Remorquage,Integer> {
+public interface RemorquageRepository extends JpaRepository<Remorquage,Integer>,RemorquageRepositoryCustom {
     @Query(value = "SELECT r FROM Remorquage r WHERE concat(r.nomROM,r.lieuDepot) LIKE %?1%",nativeQuery = false)
     Page<Remorquage> findByKeyword(String keyword, Pageable pageable);
 

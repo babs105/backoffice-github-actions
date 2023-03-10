@@ -4,157 +4,110 @@ package sn.sastrans.backofficev2.trace.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import sn.sastrans.backofficev2.trace.dto.DetailAccidentDto;
+import sn.sastrans.backofficev2.trace.dto.RemorquageDto;
+import sn.sastrans.backofficev2.trace.dto.RomSearchDto;
+import sn.sastrans.backofficev2.trace.mappers.RemorquageMapper;
+import sn.sastrans.backofficev2.trace.models.DetailAccident;
 import sn.sastrans.backofficev2.trace.models.Evenement;
 import sn.sastrans.backofficev2.trace.models.Remorquage;
 import sn.sastrans.backofficev2.trace.services.EvenementService;
 import sn.sastrans.backofficev2.trace.services.RemorquageService;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 @Slf4j
-@Controller
+@CrossOrigin(origins = "*")
+@RestController
 public class RemorquageController {
 
     @Autowired
     private RemorquageService remorquageService;
     @Autowired
     private EvenementService evenementService;
-
-
-    public Model addModelAttributes(Model model){
-
-        model.addAttribute("remorquage", new Remorquage());
-        return model;
-    }
-
-   //get ALL page
-    @GetMapping("/trace/remorquages")
-//    public String getAllPages(Model model, String keyword, @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateDebut,@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate  dateFin)  {
-    public String getAllPages(Model model, String keyword,@DateTimeFormat(pattern = "yyyy-MM-dd")  Date dateDebut,@DateTimeFormat(pattern = "yyyy-MM-dd")  Date dateFin)  {
-        log.info("keyword "+keyword);
-        log.info("dateDebut "+dateDebut);
-        log.info("dateFin "+dateFin);
-//      if(keyword==null){
-//         keyword="" ;
-//      }
-        return getPageWithSort(model,1,keyword,dateDebut,dateFin,"r.dateRom","desc");
-//        return "";
-    }
-
-    @GetMapping("/trace/remorquages/page/{pageNumber}")
-    public String getPageWithSort(Model model,
-                                               @PathVariable("pageNumber") int currentPage,
-                                               @PathParam("keyword") String keyword,
-                                               @PathParam("dateDebut") @DateTimeFormat(pattern= "yyyy-MM-dd") Date dateDebut,
-                                               @PathParam("dateFin") @DateTimeFormat(pattern= "yyyy-MM-dd") Date dateFin,
-                                               @PathParam("sortField") String sortField,
-                                               @PathParam("sortDir") String sortDir){
-
-               Page<Remorquage> page= remorquageService.getAllRemorquageWithSort(keyword,dateDebut,dateFin,sortField,sortDir,currentPage);
-
-               int totalPages = page.getTotalPages();
-               long totalElements = page.getTotalElements();
-               List<Remorquage> remorquages = page.getContent();
-
-               model.addAttribute("currentPage", currentPage);
-               model.addAttribute("totalPages",totalPages);
-               model.addAttribute("totalElements",totalElements);
-               model.addAttribute("remorquages",remorquages);
-
-               model.addAttribute("keyword", keyword);
-               model.addAttribute("dateDebut", dateDebut);
-               model.addAttribute("dateFin", dateFin);
-               model.addAttribute("sortField", sortField);
-               model.addAttribute("sortDir", sortDir);
-               model.addAttribute("reverseSortDir",sortDir.equals("asc") ? "desc" : "asc");
-
-        return "trace/remorquages";
-
-
-    }
-    // show form add
-    @GetMapping("/trace/remorquageAdd/{id}")
-    public String showFormAddRemorquage(@PathVariable Integer id, Model model){
-
-        Evenement event = evenementService.getEvenementById(id);
-        model.addAttribute("remorquages",event.getRemorquages());
-        model.addAttribute("evenement",event);
-
-     addModelAttributes(model);
-        return "trace/remorquageAdd";
-    }
-
+    @Autowired
+    RemorquageMapper remorquageMapper;
 
     //Add Remorquage
     @PostMapping("/trace/remorquages")
-    public String addRemorquage(@Valid Remorquage remorquage, BindingResult result, RedirectAttributes redirAttrs){
-        if (result.hasErrors()) {
-            return "trace/remorquageEdit";
-        }
-         Remorquage remorquageSaved = remorquageService.saveRemorquage(remorquage);
-         if(remorquageSaved != null){
-             Evenement evenement = evenementService.getEvenementById(remorquage.getEventid());
-             evenement.setStatutEvent(remorquage.getStatutRom());
-             evenement.setStatutRomEvent(remorquage.getStatutRom());
-             evenementService.saveEvenement(evenement);
-             redirAttrs.addFlashAttribute("success", "Remorquage ajout avec Succes.");
-
-         }else{
-             redirAttrs.addFlashAttribute("error", "Erreur ajout Remorquage.");
-         }
-
-        return "redirect:/trace/evenement/Edit/"+remorquage.getEventid();
-    }
-
-    //Add Remorquage
-    @PostMapping("/trace/update/remorquages")
-    public String updateRemorquage(@Valid Remorquage remorquage, BindingResult result, RedirectAttributes redirAttrs){
-        if (result.hasErrors()) {
-            return "trace/remorquageEdit";
-        }
-        Remorquage remorquageSaved = remorquageService.saveRemorquage(remorquage);
-        if(remorquageSaved != null){
-            Evenement evenement = evenementService.getEvenementById(remorquage.getEventid());
-            evenement.setStatutEvent(remorquage.getStatutRom());
-            evenement.setStatutRomEvent(remorquage.getStatutRom());
+    public ResponseEntity<RemorquageDto> addRemorquage(@RequestBody @Valid RemorquageDto remorquageDto) {
+        try {
+            Remorquage rom = remorquageService.saveRemorquage(remorquageMapper.toEntity(remorquageDto));
+            RemorquageDto romDto =  remorquageMapper.toDto(rom);
+            Evenement evenement = evenementService.getEvenementById(remorquageDto.getEventid());
+            evenement.setStatutEvent(remorquageDto.getStatutRom());
+            evenement.setStatutRomEvent(remorquageDto.getStatutRom());
             evenementService.saveEvenement(evenement);
-            redirAttrs.addFlashAttribute("success", "Remorquage Modifie avec Succes.");
 
-        }else{
-            redirAttrs.addFlashAttribute("error", "Erreur Modification Remorquage.");
+//            return new ResponseEntity<>(romDto, HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.CREATED).body(romDto);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    @PostMapping("/trace/remorquages/search")
+    public ResponseEntity<Map<String, Object>> searchRemorquage(@RequestBody @Valid RomSearchDto critre ) {
 
-        return "redirect:/trace/evenement/Edit/"+remorquage.getEventid();
+        try {
+            Page<Remorquage> pageRemorquage= remorquageService.searchRemorquage(critre,critre.getPage(),critre.getSize());
+
+           List<Remorquage> remorquages = pageRemorquage.getContent();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("remorquages", remorquageMapper.toDto(remorquages));
+            response.put("currentPage", pageRemorquage.getNumber());
+            response.put("totalItems", pageRemorquage.getTotalElements());
+            response.put("totalPages", pageRemorquage.getTotalPages());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            log.info("error mess",e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PutMapping("/trace/remorquages/update/{id}")
+    public ResponseEntity<RemorquageDto> updateDetailAccident(@PathVariable Integer id, @RequestBody @Valid RemorquageDto remorquageDto) {
+
+
+        Remorquage romEntity = remorquageMapper.toEntity(remorquageDto);
+        romEntity.setId(id);
+        Remorquage romEntitySaved = remorquageService.saveRemorquage(romEntity);
+
+        if (romEntitySaved != null) {
+//            return new ResponseEntity<>(remorquageDto, HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(remorquageDto);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    //The op parameter is either Edit or Details show form
-    @GetMapping("/trace/remorquage/{op}/{id}")
-    public String editRemorquage(@PathVariable Integer id, @PathVariable String op, Model model){
-        Remorquage remorquage = remorquageService.getRemorquageById(id);
-        model.addAttribute("remorquage",remorquage);
-//        addModelAttributes(model);
-        return "trace/remorquage"+op; //returns RemorquageEdit or RemorquageDetails
+    @GetMapping("/trace/remorquages/{id}")
+    public ResponseEntity<RemorquageDto> editRemorquage(@PathVariable Integer id) {
+        try {
+            RemorquageDto romDto = remorquageMapper.toDto(remorquageService.getRemorquageById(id));
+
+//            return new ResponseEntity<>(romDto, HttpStatus.OK);
+            return ResponseEntity.ok(romDto);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-// delete Remorquage by id
-    @GetMapping("/trace/remorquage/delete/{id}")
-    public String deleteRemorquage(@PathVariable Integer id){
-        remorquageService.deleteRemorquage(id);
-        return "redirect:/trace/remorquages";
+    @DeleteMapping("/trace/remorquages/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteRemorquage(@PathVariable Integer id) {
+        try {
+            remorquageService.deleteRemorquage(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
-
-
-
 
 }

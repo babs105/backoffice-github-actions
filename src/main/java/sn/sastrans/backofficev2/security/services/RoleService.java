@@ -14,10 +14,12 @@ public interface RoleService {
     Role getRoleById(int id);
     Role getRoleByName(String rolename);
     void deleteRole(int id);
-    void assignUserRole(Integer userId, Integer roleId);
-    void unassignUserRole(Integer userId, Integer roleId);
+    User assignUserRole(Integer userId, Integer roleId);
+    User unassignUserRole(Integer userId, Integer roleId);
 
     Set<Role> getUserRoles(User user);
     Set<Role> getUserNotRoles(User user);
+    List<Role> getOtherRolesUser(Integer userId);
+
 }
 

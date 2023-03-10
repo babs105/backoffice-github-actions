@@ -44,19 +44,19 @@ public class RoleServiceImpl implements RoleService {
 
     }
 
-    public void assignUserRole(Integer userId, Integer roleId){
+    public User assignUserRole(Integer userId, Integer roleId){
         User user  = userRepository.findById(userId).orElse(null);
         Role role = roleRepository.findById(roleId).orElse(null);
         Set<Role> userRoles = user.getRoles();
         userRoles.add(role);
         user.setRoles(userRoles);
-        userRepository.save(user);
+       return userRepository.save(user);
     }
     //Unassign Role to User
-    public void unassignUserRole(Integer userId, Integer roleId){
+    public User unassignUserRole(Integer userId, Integer roleId){
         User user  = userRepository.findById(userId).orElse(null);
         user.getRoles().removeIf(x -> x.getId()==roleId);
-        userRepository.save(user);
+     return    userRepository.save(user);
     }
     public Set<Role> getUserRoles(User user){
         return user.getRoles();
@@ -66,4 +66,11 @@ public class RoleServiceImpl implements RoleService {
     public Set<Role> getUserNotRoles(User user) {
         return roleRepository.getUserNotRoles(user.getId());
     }
+
+    @Override
+    public List<Role> getOtherRolesUser(Integer userId) {
+        return roleRepository.getOtherRolesUser(userId);
+    }
+
+
 }

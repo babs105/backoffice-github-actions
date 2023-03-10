@@ -9,6 +9,7 @@ import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
+import sn.sastrans.backofficev2.security.models.Auditable;
 
 
 import javax.persistence.*;
@@ -24,20 +25,18 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity
 @Data
-
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE evenement SET deleted = true,deleted_at = NOW()  WHERE id = ?")
 @Where(clause = "deleted = false")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Evenement {
-//       extends Auditable<String> {
+public class Evenement extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
 //    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+   @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateEvent;
 
     @Column(name = "deleted_by")
@@ -107,7 +106,7 @@ public class Evenement {
     @OneToOne(mappedBy ="evenement",orphanRemoval = true,cascade = CascadeType.ALL)
     private DetailAccident detailAccident;
 
-    private boolean deleted;
+    private boolean deleted=false;
 //
 //    @PreRemove
 //    public void preRemove() {

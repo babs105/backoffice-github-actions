@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import sn.sastrans.backofficev2.trace.dto.AcciSearchDto;
 import sn.sastrans.backofficev2.trace.models.DetailAccident;
 import sn.sastrans.backofficev2.trace.repositories.DetailAccidentRepository;
 import sn.sastrans.backofficev2.trace.services.DetailAccidentService;
@@ -67,6 +68,11 @@ public class DetailAccidentServiceImpl implements DetailAccidentService {
     @Override
     public DetailAccident getDetailAccidentById(int id) {
         return detailAccidentRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Page<DetailAccident> searchDetailAccident(AcciSearchDto critre, int page, int size) {
+        return detailAccidentRepository.searchDetailAccident(critre,page,size);
     }
 
     @Override

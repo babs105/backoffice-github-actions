@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import sn.sastrans.backofficev2.trace.dto.RomSearchDto;
 import sn.sastrans.backofficev2.trace.models.Remorquage;
 import sn.sastrans.backofficev2.trace.repositories.RemorquageRepository;
 import sn.sastrans.backofficev2.trace.services.RemorquageService;
@@ -67,6 +68,11 @@ public class RemorquageServiceImpl implements RemorquageService {
     public void deleteRemorquage(int id) {
         remorquageRepository.deleteById(id);
 
+    }
+
+    @Override
+    public Page<Remorquage> searchRemorquage(RomSearchDto critere,int page,int size) {
+        return remorquageRepository.searchRemorquage(critere,page,size);
     }
 
     @Override

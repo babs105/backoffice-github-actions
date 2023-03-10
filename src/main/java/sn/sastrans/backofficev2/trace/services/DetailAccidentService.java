@@ -3,7 +3,10 @@ package sn.sastrans.backofficev2.trace.services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import sn.sastrans.backofficev2.trace.dto.AcciSearchDto;
+import sn.sastrans.backofficev2.trace.dto.RomSearchDto;
 import sn.sastrans.backofficev2.trace.models.DetailAccident;
+import sn.sastrans.backofficev2.trace.models.Remorquage;
 
 import java.util.Date;
 import java.util.List;
@@ -19,5 +22,7 @@ public interface DetailAccidentService {
 
     Page<DetailAccident> getDetailAccidentByKeyword(String keyword, Pageable pageable);
     DetailAccident getDetailAccidentById(int id);
+
+    Page<DetailAccident> searchDetailAccident(AcciSearchDto critre, int page, int size);
     void deleteDetailAccident(Integer id);
 }

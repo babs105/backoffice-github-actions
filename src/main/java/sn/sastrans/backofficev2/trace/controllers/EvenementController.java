@@ -9,12 +9,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import sn.sastrans.backofficev2.trace.dto.EvenementDto;
 import sn.sastrans.backofficev2.trace.dto.EventSearchDTO;
+import sn.sastrans.backofficev2.trace.mappers.EvenementMapper;
 import sn.sastrans.backofficev2.trace.models.Evenement;
 import sn.sastrans.backofficev2.trace.services.DetailAccidentService;
 import sn.sastrans.backofficev2.trace.services.EvenementService;
@@ -28,7 +26,7 @@ import java.util.Map;
 
 @Slf4j
 @CrossOrigin(origins = "*")
-@Controller
+@RestController
 public class EvenementController {
 
     @Autowired
@@ -39,112 +37,92 @@ public class EvenementController {
     @Autowired
     private RemorquageService remorquageService;
 
+    @Autowired
+    EvenementMapper evenementMapper;
+
 
     @GetMapping("/trace/evenements")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> getAllEvenements(
-            @RequestParam(required = false) String title,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size
-    ) {
+    public ResponseEntity<Map<String, Object>> getAllEvenements(@RequestParam(required = false) String title, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
 
         try {
             List<Evenement> evenements = new ArrayList<Evenement>();
             Pageable paging = PageRequest.of(page, size, Sort.by("dateEvent").descending());
 
             Page<Evenement> pageEvents;
-            if (title == null)
-                pageEvents = evenementService.getAllEvenement(paging);
-            else
-                pageEvents = evenementService.getAllEvenementByKeyword(title, paging);
+            if (title == null) pageEvents = evenementService.getAllEvenement(paging);
+            else pageEvents = evenementService.getAllEvenementByKeyword(title, paging);
 
             evenements = pageEvents.getContent();
 
             Map<String, Object> response = new HashMap<>();
-            response.put("evenements", evenements);
+            response.put("evenements", evenementMapper.toDto(evenements));
             response.put("currentPage", pageEvents.getNumber());
             response.put("totalItems", pageEvents.getTotalElements());
             response.put("totalPages", pageEvents.getTotalPages());
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
+            log.info("error mess",e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // show form add
-    @GetMapping("/trace/evenementAdd")
-    public String showFormAddEvenement(Model model){
-        return "trace/evenementAdd";
-    }
+//    @GetMapping("/trace/evenementAdd")
+//    public String showFormAddEvenement(Model model){
+//        return "trace/evenementAdd";
+//    }
 
     @PostMapping("/trace/search")
-    @ResponseBody
-    public ResponseEntity<List<Evenement>> searchEvenement(@RequestBody EventSearchDTO critere){
-        try{
+    public ResponseEntity<List<Evenement>> searchEvenement(@RequestBody EventSearchDTO critere) {
+        try {
             return new ResponseEntity<>(evenementService.searchEvenement(critere), HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    //Add Evenement
+
+    //    Add Evenement
     @PostMapping("/trace/evenements")
-    public String addEvenement(@Valid Evenement evenement, BindingResult result, RedirectAttributes redirAttrs){
-        if (result.hasErrors()) {
-            return "trace/evenementAdd";
+    public ResponseEntity<EvenementDto> addEvenement(@RequestBody @Valid EvenementDto evenementDto) {
+        try {
+            EvenementDto eventDto = evenementMapper.toDto(evenementService.saveEvenement(evenementMapper.toEntity(evenementDto)));
+//            Evenement event = evenementService.saveEvenement(evenementMapper.toEntity(evenementDto));
+            return new ResponseEntity<>(eventDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-         Evenement evenementSaved = evenementService.saveEvenement(evenement);
-         if(evenementSaved != null){
-             redirAttrs.addFlashAttribute("success", "Evenement cree avec Succes.");
-         }else{
-             redirAttrs.addFlashAttribute("error", "Erreur creation Evenement.");
-         }
-        return "redirect:/trace/evenements";
-    }
-    @PostMapping("/trace/update/evenement")
-    public String updateEvenement(@Valid Evenement evenement, BindingResult result, RedirectAttributes redirAttrs){
-        if (result.hasErrors()) {
-            return "trace/evenementEdit";
-        }
-        Evenement evenementSaved = evenementService.saveEvenement(evenement);
-        if(evenementSaved != null){
-            redirAttrs.addFlashAttribute("success", "Evenement Modifie avec Succes.");
-        }else{
-            redirAttrs.addFlashAttribute("error", "Erreur modification Evenement.");
-        }
-//        return "redirect:/trace/evenements";
-        return "redirect:/trace/evenement/Edit/"+evenement.getId();
+
     }
 
+    @PutMapping("/trace/evenements/update/{id}")
+    public ResponseEntity<EvenementDto> updateEvenement(@PathVariable Integer id, @RequestBody @Valid EvenementDto evenementDto) {
+//        log.info("DED" + evenementDto.getId());
 
-    //The op parameter is either Edit or Details show form
-//    @GetMapping("/trace/evenement/{op}/{id}")
-//    public String editEvenement(@PathVariable Integer id, @PathVariable String op, Model model){
-//        Evenement evenement = evenementService.getEvenementById(id);
-////       log.info("evenemt" +evenement);
-//        model.addAttribute("evenement", evenement);
-//        model.addAttribute("remorquages",evenement.getRemorquages());
-//        model.addAttribute("accidents",detailAccidentService.getDetailAccidentByEventId(id));
-//        model.addAttribute("sizeAccident",detailAccidentService.getDetailAccidentByEventId(id).size());
-////        addModelAttributes(model);
-//        return "trace/evenement"+op; //returns EvenementEdit or EvenementDetails
-//    }
+        Evenement event = evenementMapper.toEntity(evenementDto);
+        event.setId(id);
+        EvenementDto evenetDto = evenementMapper.toDto(evenementService.saveEvenement(event));
+        if (evenetDto != null) {
+            return new ResponseEntity<>(evenetDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/trace/evenements/{id}")
-    @ResponseBody
-    public ResponseEntity<Evenement> editEvenement(@PathVariable Integer id){
-        Evenement evenement = evenementService.getEvenementById(id);
-
-        if(evenement!=null){
-            return new ResponseEntity<>(evenement, HttpStatus.OK);
-        }else{
+    public ResponseEntity<EvenementDto> editEvenement(@PathVariable Integer id) {
+//        Evenement evenementdto = evenementService.getEvenementById(id);
+       EvenementDto evenementdto = evenementMapper.toDto(evenementService.getEvenementById(id));
+        if (evenementdto != null) {
+            return new ResponseEntity<>(evenementdto, HttpStatus.OK);
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
-// delete Evenement by id
+
+    // delete Evenement by id
     @DeleteMapping("/trace/evenements/delete/{id}")
-    @ResponseBody
-    public ResponseEntity<HttpStatus> deleteEvenement(@PathVariable Integer id){
+    public ResponseEntity<HttpStatus> deleteEvenement(@PathVariable Integer id) {
         try {
             evenementService.deleteEvenement(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -152,15 +130,15 @@ public class EvenementController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @GetMapping("/trace/evenement/{eventId}/deleteEvent/{romId}")
-    public String deleteRomInEvenement(@PathVariable Integer eventId,@PathVariable Integer romId){
-        remorquageService.deleteRemorquage(romId);
-        return "redirect:/trace/evenement/Edit/"+eventId;
-    }
-    @GetMapping("/trace/evenement/{eventId}/deleteAccident/{accidentId}")
-    public String deleteAcciInEvenement(@PathVariable Integer eventId,@PathVariable Integer accidentId){
-        detailAccidentService.deleteDetailAccident(accidentId);
-        return "redirect:/trace/evenement/Edit/"+eventId;
-    }
+//
+//    @GetMapping("/trace/evenement/{eventId}/deleteEvent/{romId}")
+//    public String deleteRomInEvenement(@PathVariable Integer eventId,@PathVariable Integer romId){
+//        remorquageService.deleteRemorquage(romId);
+//        return "redirect:/trace/evenement/Edit/"+eventId;
+//    }
+//    @GetMapping("/trace/evenement/{eventId}/deleteAccident/{accidentId}")
+//    public String deleteAcciInEvenement(@PathVariable Integer eventId,@PathVariable Integer accidentId){
+//        detailAccidentService.deleteDetailAccident(accidentId);
+//        return "redirect:/trace/evenement/Edit/"+eventId;
+//    }
 }
