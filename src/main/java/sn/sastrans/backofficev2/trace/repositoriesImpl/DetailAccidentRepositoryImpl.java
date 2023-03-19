@@ -6,11 +6,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import sn.sastrans.backofficev2.trace.dto.AcciSearchDto;
-import sn.sastrans.backofficev2.trace.dto.RomSearchDto;
 import sn.sastrans.backofficev2.trace.models.DetailAccident;
-import sn.sastrans.backofficev2.trace.models.Remorquage;
 import sn.sastrans.backofficev2.trace.repositories.DetailAccidentRepositoryCustom;
-import sn.sastrans.backofficev2.trace.repositories.RemorquageRepositoryCustom;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;

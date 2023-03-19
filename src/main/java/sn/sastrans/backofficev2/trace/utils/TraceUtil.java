@@ -3,7 +3,10 @@ package sn.sastrans.backofficev2.trace.utils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 @Slf4j
 public class TraceUtil {
 
@@ -15,7 +18,7 @@ public class TraceUtil {
             Long hours= tempsEcoule.toHours();
             Long minutes= tempsEcoule.toMinutes() % 60;
             return String.format("%02d:%02d",hours,minutes);
-        }else return "NoN";
+        }else return "NON";
 
 
 
@@ -31,9 +34,22 @@ public class TraceUtil {
             String distance =String.valueOf(Math.abs(pkaFinmetre - pkaDebutmetre));
 
             return distance;
-        }else return "NoN";
+        }else return "NON";
 
 
 
     }
+
+    public static  String formatLocalDateTimeToString(LocalDateTime date) {
+
+        if (date != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            String formattedDate = date.format(formatter);
+            return formattedDate;
+        } else {
+            return "NON";
+        }
+
+    }
+
 }

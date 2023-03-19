@@ -1,24 +1,28 @@
 package sn.sastrans.backofficev2.security.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+@SQLDelete(sql = "UPDATE role SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
+public class Role extends Auditable<String>  {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
-
     private String name;
     private String description;
 
+    @ManyToMany(mappedBy = "roles")
+    Set<User> users = new HashSet<>();
+    private boolean deleted;
 }

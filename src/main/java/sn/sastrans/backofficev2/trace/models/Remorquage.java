@@ -12,6 +12,8 @@ import sn.sastrans.backofficev2.security.models.Auditable;
 import javax.persistence.*;
 import java.util.Date;
 
+import static javax.persistence.TemporalType.TIMESTAMP;
+
 
 @Entity
 @Data
@@ -45,4 +47,10 @@ public class Remorquage extends Auditable<String> {
     private String statutRom;
 
     private boolean deleted;
+    @Column(name = "deleted_by")
+    private String deletedBy;
+
+    @Column(name = "deleted_at")
+    @Temporal(TIMESTAMP)
+    private Date deletedAt;
 }

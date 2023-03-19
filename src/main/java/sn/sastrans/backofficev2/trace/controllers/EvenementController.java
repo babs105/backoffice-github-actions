@@ -46,7 +46,7 @@ public class EvenementController {
 
         try {
             List<Evenement> evenements = new ArrayList<Evenement>();
-            Pageable paging = PageRequest.of(page, size, Sort.by("dateEvent").descending());
+            Pageable paging = PageRequest.of(page, size, Sort.by("dateEvent","heureDebutEvent").descending());
 
             Page<Evenement> pageEvents;
             if (title == null) pageEvents = evenementService.getAllEvenement(paging);

@@ -10,9 +10,10 @@ import java.util.List;
 public interface UserService {
     User saveUser(User user);
     Page<User> getAllUser(Pageable pageable);
+    Page<User> getAllUserByKeyword(String keyword, Pageable pageable);
     User getUserById(int id);
     void deleteUser(int id);
-    Page<User> getAllUserByKeyword(String keyword, Pageable pageable);
+
     Boolean existsByUsername(String username);
 }
 

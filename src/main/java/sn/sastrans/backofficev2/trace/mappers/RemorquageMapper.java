@@ -17,7 +17,12 @@ public interface RemorquageMapper extends EntityMapper<RemorquageDto, Remorquage
     RemorquageMapper INSTANCE = Mappers.getMapper(RemorquageMapper.class);
 
     @Mapping(target = "dureeIntervention", expression = "java(sn.sastrans.backofficev2.trace.utils.TraceUtil.formatDurationToString(remorquage.getHeureArriveeROM(), remorquage.getHeureRomorque()))")
+    @Mapping(target = "heureArriveeROM", expression = "java(remorquage.getHeureArriveeROM().isEmpty() ? \"NON\":remorquage.getHeureArriveeROM())")
+    @Mapping(target = "lieuDepot", expression = "java(remorquage.getLieuDepot().isEmpty() ? \"NON\":remorquage.getLieuDepot())")
     @Mapping(source = "evenement.localisation",target="localisation")
+    @Mapping(source = "evenement.natureEvent",target="natureEvent")
+    @Mapping(source = "evenement.causeEvent",target="causeEvent")
+    @Mapping(source = "evenement.heureDebutEvent",target="heureDebutEvent")
     RemorquageDto toDto(Remorquage remorquage);
 
     @InheritInverseConfiguration

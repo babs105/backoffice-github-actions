@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
@@ -17,6 +18,9 @@ public class RemorquageDto {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateRom;
+    private String natureEvent;
+    private String causeEvent;
+    private String heureDebutEvent;
     private String localisation;
     private String matVhlRemorque;
     private String catVhlRemorque;

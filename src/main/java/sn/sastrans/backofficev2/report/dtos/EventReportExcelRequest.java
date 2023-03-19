@@ -1,0 +1,16 @@
+package sn.sastrans.backofficev2.report.dtos;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class EventReportExcelRequest {
+    private Date dateDebut;
+    private Date dateFin;
+    private String secteur;
+}

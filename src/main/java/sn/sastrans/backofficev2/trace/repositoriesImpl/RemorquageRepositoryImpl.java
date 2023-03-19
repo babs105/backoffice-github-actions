@@ -5,15 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import sn.sastrans.backofficev2.trace.dto.EventSearchDTO;
-import sn.sastrans.backofficev2.trace.dto.RomSearchDto;
-import sn.sastrans.backofficev2.trace.models.Evenement;
+import sn.sastrans.backofficev2.trace.dto.RomSearchRequestDto;
+import sn.sastrans.backofficev2.trace.dto.RomSearchExcelRequestDto;
 import sn.sastrans.backofficev2.trace.models.Remorquage;
-import sn.sastrans.backofficev2.trace.repositories.EvenementRepositoryCustom;
 import sn.sastrans.backofficev2.trace.repositories.RemorquageRepositoryCustom;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -28,7 +25,7 @@ public class RemorquageRepositoryImpl implements RemorquageRepositoryCustom {
    private  EntityManager entityManager;
 
     @Override
-    public  Page<Remorquage>  searchRemorquage(RomSearchDto critere,int page,int size) {
+    public  Page<Remorquage>  searchRemorquage(RomSearchRequestDto critere, int page, int size) {
         CriteriaBuilder cbuild = entityManager.getCriteriaBuilder();
         CriteriaQuery<Remorquage> cquery = cbuild.createQuery(Remorquage.class);
         Root<Remorquage> remorquageRoot = cquery.from(Remorquage.class); // ou sera executer le query
@@ -84,16 +81,53 @@ public class RemorquageRepositoryImpl implements RemorquageRepositoryCustom {
 
         Page<Remorquage> pageResult = new PageImpl<>(result, pageable, count);
 
-
-
-//
-//        TypedQuery<Remorquage> typedQuery = entityManager.createQuery(cquery);
-//        typedQuery.setFirstResult((int) pageable.getOffset());
-//        typedQuery.setMaxResults(pageable.getPageSize());
-//        List<Remorquage> entities = typedQuery.getResultList();
-//        Page<Remorquage> pageResult = new PageImpl<>(entities, pageable, totalCount);
-
         return pageResult;
-//        return entityManager.createQuery(cquery).getResultList();
+
+    }
+
+    @Override
+    public List<Remorquage> searchRemorquageExcel(RomSearchExcelRequestDto critere) {
+        CriteriaBuilder cbuild = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Remorquage> cquery = cbuild.createQuery(Remorquage.class);
+        Root<Remorquage> remorquageRoot = cquery.from(Remorquage.class); // ou sera executer le query
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if(critere.getPka()!=null){
+            predicates.add(cbuild.like(remorquageRoot.get("evenement").get("localisation"),"%" + critere.getPka() + "%")); //root methode
+        }
+        if(critere.getSecteur()!=null){
+            predicates.add(cbuild.like(remorquageRoot.get("evenement").get("localisation"),"%" + critere.getSecteur() + "%"));
+        }
+        if(critere.getCatVhlRemorque()!=null){
+            predicates.add(cbuild.like(remorquageRoot.get("catVhlRemorque"),"%" + critere.getCatVhlRemorque() + "%"));
+        }
+        if(critere.getMatVhlRemorque()!=null){
+            predicates.add(cbuild.like(remorquageRoot.get("matVhlRemorque"),"%" + critere.getMatVhlRemorque() + "%"));
+        }
+        if(critere.getMatriculeDep()!=null){
+            predicates.add(cbuild.like(remorquageRoot.get("matriculeDep"),"%" + critere.getMatriculeDep() + "%"));
+        }
+        if(critere.getNomROM()!=null){
+            predicates.add(cbuild.like(remorquageRoot.get("nomROM"),"%" + critere.getNomROM() + "%"));
+        }
+        if(critere.getLieuDepot()!=null){
+            predicates.add(cbuild.equal(remorquageRoot.get("lieuDepot"),critere.getLieuDepot()));
+        }
+        if(critere.getStatutRom()!=null){
+            predicates.add(cbuild.equal(remorquageRoot.get("statutRom"),critere.getStatutRom()));
+        }
+        if(critere.getLieuDepart()!=null){
+            predicates.add(cbuild.like(remorquageRoot.get("lieuDepart"),"%" + critere.getLieuDepart() + "%"));
+        }
+        if(critere.getDateRom()!=null){
+            predicates.add(cbuild.equal(remorquageRoot.get("dateRom"),critere.getDateRom()));
+        }
+
+        cquery.where(predicates.toArray(new Predicate[0])); // convert predicat arraylist to array
+        cquery.orderBy(cbuild.desc(remorquageRoot.get("dateRom")));
+
+        List<Remorquage> result = entityManager.createQuery(cquery).getResultList();
+        return result;
     }
 }

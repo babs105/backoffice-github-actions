@@ -2,6 +2,8 @@ package sn.sastrans.backofficev2.security.servicesImpl;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sn.sastrans.backofficev2.security.models.Role;
 import sn.sastrans.backofficev2.security.models.User;
@@ -25,9 +27,15 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> getAllRole() {
-        return roleRepository.findAll();
+    public Page<Role> getAllRole(Pageable pageable) {
+        return roleRepository.findAll(pageable);
     }
+
+    @Override
+    public Page<Role> getAllRoleByKeyword(String keyword, Pageable pageable) {
+        return roleRepository.findByKeyword(keyword,pageable);
+    }
+
 
     @Override
     public Role getRoleById(int id) {
@@ -41,7 +49,11 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void deleteRole(int id) {
-
+      Role role =  roleRepository.findById(id).orElse(null);
+     for(User user: role.getUsers()){
+           user.getRoles().remove(role);
+        }
+        roleRepository.deleteById(id);
     }
 
     public User assignUserRole(Integer userId, Integer roleId){

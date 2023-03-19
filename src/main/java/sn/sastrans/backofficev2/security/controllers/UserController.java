@@ -138,7 +138,8 @@ public class UserController {
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
-            Role userRole = roleService.getRoleByName("USER");
+          Role userRole = roleService.getRoleByName("USER");
+//            Role userRole = new Role(2,"USER","access to home page");
             if (userRole == null) {
                 throw new RuntimeException("Error: Role is not found.");
             }
@@ -149,7 +150,7 @@ public class UserController {
         user.setRoles(roles);
         userService.saveUser(user);
 
-        return ResponseEntity.ok(new MessageResponseDto("User registered successfully!"));
+        return ResponseEntity.ok(new MessageResponseDto("Compte créé avec succes!"));
     }
 
     @GetMapping("/security/user/{id}")
@@ -162,5 +163,14 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
+    @DeleteMapping("/security/user/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable Integer id) {
+        try {
+            userService.deleteUser(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

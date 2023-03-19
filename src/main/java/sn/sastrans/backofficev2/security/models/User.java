@@ -1,8 +1,8 @@
 package sn.sastrans.backofficev2.security.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,8 +14,11 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class User {
+@Setter
+@Getter
+@SQLDelete(sql = "UPDATE role SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
+public class User extends Auditable<String>  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +41,7 @@ public class User {
         this.password = password;
     }
 
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -46,4 +49,6 @@ public class User {
     )
     Set<Role> roles = new HashSet<Role>();
 
+
+    private boolean deleted;
 }

@@ -9,10 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sn.sastrans.backofficev2.trace.dto.AcciSearchDto;
 import sn.sastrans.backofficev2.trace.dto.DetailAccidentDto;
-import sn.sastrans.backofficev2.trace.dto.RomSearchDto;
 import sn.sastrans.backofficev2.trace.mappers.DetailAccidentMapper;
 import sn.sastrans.backofficev2.trace.models.DetailAccident;
-import sn.sastrans.backofficev2.trace.models.Remorquage;
 import sn.sastrans.backofficev2.trace.services.DetailAccidentService;
 import sn.sastrans.backofficev2.trace.services.EvenementService;
 

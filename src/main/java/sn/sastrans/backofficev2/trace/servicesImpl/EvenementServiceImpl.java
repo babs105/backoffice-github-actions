@@ -53,8 +53,7 @@ public class EvenementServiceImpl  implements EvenementService {
 
     @Override
     public Page<Evenement> getAllEvenement(Pageable pageable) {
-        return
-                evenementRepository.findAll(pageable);
+        return evenementRepository.findAll(pageable);
     }
 
     @Override
@@ -71,6 +70,7 @@ public class EvenementServiceImpl  implements EvenementService {
     @Override
     public List<Evenement> searchEvenement(EventSearchDTO critere) {
         return evenementRepository.searchEvenement(critere);
+
     }
 
     @Override

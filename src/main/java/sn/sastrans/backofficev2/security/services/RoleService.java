@@ -2,6 +2,8 @@ package sn.sastrans.backofficev2.security.services;
 
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import sn.sastrans.backofficev2.security.models.Role;
 import sn.sastrans.backofficev2.security.models.User;
 
@@ -10,7 +12,8 @@ import java.util.Set;
 
 public interface RoleService {
     Role saveRole(Role role);
-    List<Role> getAllRole();
+    Page<Role> getAllRole(Pageable pageable);
+    Page<Role> getAllRoleByKeyword(String keyword, Pageable pageable);
     Role getRoleById(int id);
     Role getRoleByName(String rolename);
     void deleteRole(int id);

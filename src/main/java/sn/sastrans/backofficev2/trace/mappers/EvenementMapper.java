@@ -10,13 +10,14 @@ import sn.sastrans.backofficev2.trace.models.Evenement;
 import java.util.List;
 
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",uses={RemorquageMapper.class})
 public interface EvenementMapper extends EntityMapper<EvenementDto, Evenement>{
 
     EvenementMapper INSTANCE = Mappers.getMapper(EvenementMapper.class);
 
 //    @Mapping(source = "evenement.causeEvent",target="cause")
     @Mapping(target = "longBalisage", expression = "java(sn.sastrans.backofficev2.trace.utils.TraceUtil.distanceBetweenPka(evenement.getPkDebutBalisage(), evenement.getPkFinBalisage()))")
+    @Mapping(target = "nomPAT", expression = "java(evenement.getNomPAT().isEmpty() ? \"NON\":evenement.getNomPAT())")
     EvenementDto toDto(Evenement evenement);
 
     @InheritInverseConfiguration
