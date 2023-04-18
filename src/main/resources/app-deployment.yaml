@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backoffice-v2
+spec:
+  selector:
+    matchLabels:
+      app: backoffice-v2
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: backoffice-v2
+    spec:
+      containers:
+        - name: backoffice-v2
+          image: backoffice-v2:1.0
+          ports:
+            - containerPort: 8080
+          env:   # Setting Environmental Variables
+            - name: DB_HOST   # Setting Database host address
+              value: mysql
+            - name: DB_NAME  # Setting Database name
+              value: bofficedbv2
+            - name: DB_USERNAME  # Setting Database username
+              value: root
+            - name: DB_PASSWORD # Setting Database password
+              value: root
+# This seperator --- below is MANDATORY!!!
+---
+# Define a 'Service' To Expose the application
+apiVersion: v1
+kind: Service
+metadata:
+  name: backoffice-service
+spec:
+  ports:
+    - name: http
+      protocol: "TCP"
+      port: 8080    # Port inside the cluster
+      targetPort: 8080   # Port exposed to the outside
+  selector:
+    app: backoffice-v2
+  type: ClusterIP

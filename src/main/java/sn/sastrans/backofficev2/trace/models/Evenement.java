@@ -3,6 +3,7 @@ package sn.sastrans.backofficev2.trace.models;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
@@ -27,6 +28,7 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @SQLDelete(sql = "UPDATE evenement SET deleted = true,deleted_at = NOW()  WHERE id = ?")
 @Where(clause = "deleted = false")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -103,7 +105,7 @@ public class Evenement extends Auditable<String> {
     @OneToMany(mappedBy = "evenement",orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Remorquage> remorquages = new ArrayList<>();
 
-    @OneToOne(mappedBy ="evenement",orphanRemoval = true,cascade = CascadeType.ALL)
+    @OneToOne(mappedBy ="evenement",orphanRemoval = true,cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private DetailAccident detailAccident;
 
     private boolean deleted=false;

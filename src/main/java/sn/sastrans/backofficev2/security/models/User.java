@@ -16,7 +16,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Setter
 @Getter
-@SQLDelete(sql = "UPDATE role SET deleted = true WHERE id = ?")
+@Builder
+@SQLDelete(sql = "UPDATE user SET deleted = true WHERE id = ?")
 @Where(clause = "deleted = false")
 public class User extends Auditable<String>  {
 
@@ -40,8 +41,14 @@ public class User extends Auditable<String>  {
         this.username = username;
         this.password = password;
     }
+    public User(String username,String password, Set roles ) {
+        this.username = username;
+        this.password = password;
+        this.roles=roles;
+    }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -51,4 +58,8 @@ public class User extends Auditable<String>  {
 
 
     private boolean deleted;
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
 }

@@ -32,22 +32,22 @@ public class Nettoyage extends Auditable<String> {
     private LocalDateTime datePose;
     @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm")
     private LocalDateTime dateDepose;
-
+    private String typeBalisage;
     private String pkdebutBalise;
     private String pkfinBalise;
     private String heureDebut;
     private String heureFin;
     private String pkdebut;
     private String pkfin;
-
-    @Formula(value = " concat( sens, ' ',voie,' ',secteur) ")
-    private String localisation;
-
+    private String lieu;
+    private String autoroute;
     private String sens;
     private String voie;
     private String zone;
     private String secteur;
     private String gare;
+    @Formula(value = " concat(autoroute,' ',secteur,' ',sens,' ',voie) ")
+    private String localisation;
     private String etatNettoyage;
 
 }

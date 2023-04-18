@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backofficefront-v2
+spec:
+  selector:
+    matchLabels:
+      app: backofficefront-v2
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: backofficefront-v2
+    spec:
+      containers:
+        - name: backofficefront-v2
+          image: backofficefront-v2:1.0
+          ports:
+            - containerPort: 3000
+#          env:
+#            - name: REACT_APP_API_URL
+#              value: "http://backoffice-service:8080"
+
+# This seperator --- below is MANDATORY!!!
+---
+# Define a 'Service' To Expose the application
+apiVersion: v1
+kind: Service
+metadata:
+  name: backofficefront-service
+spec:
+  type: NodePort
+  ports:
+    - protocol: "TCP"
+      port: 3000    # Port  exposed
+      targetPort: 3000   # Port inside to the outside
+#      nodePort: 30000
+  selector:
+    app: backofficefront-v2
+

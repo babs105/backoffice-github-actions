@@ -5,9 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
-import sn.sastrans.backofficev2.trace.models.DetailAccident;
-import sn.sastrans.backofficev2.trace.models.Remorquage;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -24,28 +23,28 @@ public class EvenementDto {
 //    @Temporal(TemporalType.DATE)
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private Date dateEvent;
-        @NotNull
+        @NotEmpty
         private String natureEvent;
         @NotNull
         private String causeEvent;
-        @NotNull
+        @NotEmpty
         private String typeVehicule;
-        @NotNull
+        @NotEmpty
         private String matVehicule;
-        @NotNull
+        @NotEmpty
         private String pkEvent;
-        @NotNull
+        @NotEmpty
         private String sens;
-        @NotNull
+        @NotEmpty
         private String voie;
-        @NotNull
+        @NotEmpty
         private String secteur;
 
         @Formula(value = " concat(pk_event, ' ', sens, ' ',voie,' ',secteur) ")
         private String localisation;
-        @NotNull
+        @NotEmpty
         private String emisPar;
-        @NotNull
+        @NotEmpty
         private String heureDebutEvent;
         private String heureAppelOPC;
         private String heureAppelPAT;

@@ -31,6 +31,7 @@ import java.util.Map;
 @Slf4j
 @CrossOrigin(origins = "*")
 @RestController
+
 public class EvenementReportController {
 
     @Autowired
@@ -38,7 +39,7 @@ public class EvenementReportController {
     @Autowired
     private EvenementReportMapper evenementReportMapper;
 
-    @PostMapping("report/trace/evenements/search")
+    @PostMapping("/report/trace/evenements/search")
     public ResponseEntity<Map<String, Object>> searchEvementReport(@RequestBody @Valid EventReportRequest critre ) {
 
         try {

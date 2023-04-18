@@ -21,14 +21,14 @@ public class NettoyageServiceImpl implements NettoyageService {
     NettoyageRepository nettoyageRepository;
     @Override
     public Nettoyage saveNettoyage(Nettoyage nettoyage) {
-        if((nettoyage.getDatePose()!=null) && (nettoyage.getDateDepose() == null )){
-            nettoyage.setEtatNettoyage("En Cours");
-        }
-        if  ((nettoyage.getDatePose()!=null) && (nettoyage.getDateDepose()!= null )){
+        if(!(nettoyage.getHeureDebut().isEmpty()) && (nettoyage.getHeureFin().isEmpty())){
+            nettoyage.setEtatNettoyage("En Cours"); }
+        if(!(nettoyage.getHeureDebut().isEmpty()) && !(nettoyage.getHeureFin().isEmpty())){
             nettoyage.setEtatNettoyage("Terminer");
         }
         return nettoyageRepository.save(nettoyage);
     }
+
 
     @Override
     public List<Nettoyage> getAllNettoyage() {

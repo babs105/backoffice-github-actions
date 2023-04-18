@@ -48,13 +48,13 @@ public class Ravitaillement {
 
     // @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.DETACH) celaque si vehicle est supprimee la relation ne sera pas supprimee
 
-        @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
     @JoinColumn(name="matriculeid",referencedColumnName = "matricule",insertable=false,updatable=false)
     private Vehicle vehicle;
     @NotBlank
     private String matriculeid;
 
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
     @JoinColumn(name = "cuveid", referencedColumnName = "cuvename", insertable = false, updatable = false)
     private Cuve cuve;
     private String cuveid;

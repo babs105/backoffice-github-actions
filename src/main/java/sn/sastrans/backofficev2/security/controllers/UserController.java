@@ -10,11 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import sn.sastrans.backofficev2.exception.BadRequestException;
 import sn.sastrans.backofficev2.security.dto.*;
 import sn.sastrans.backofficev2.security.jwt.JwtUtils;
 import sn.sastrans.backofficev2.security.mappers.RoleMapper;
@@ -60,9 +62,8 @@ public class UserController {
 //        return "security/users";
 //    }
     @GetMapping("/security/users")
-    public ResponseEntity<Map<String, Object>> getAllUsers(@RequestParam(required = false) String title, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+    public ResponseEntity<?> getAllUsers(@RequestParam(required = false) String title, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
 
-        try {
             List<User> users = new ArrayList<User>();
             Pageable paging = PageRequest.of(page, size);
 
@@ -78,33 +79,26 @@ public class UserController {
             response.put("totalItems", pageUsers.getTotalElements());
             response.put("totalPages", pageUsers.getTotalPages());
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            log.info("error mess", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+
     }
 
 
     @GetMapping("/security/user/{id}/otherroles")
-    public ResponseEntity<List<RoleDto>> getOtherRolesUsers(@PathVariable Integer id) {
-        try {
+    public ResponseEntity<?> getOtherRolesUsers(@PathVariable Integer id) {
+
             List<Role> othersRoles = roleService.getOtherRolesUser(id);
             List<RoleDto> rolesDtos = roleMapper.toDto(othersRoles);
 
-            return new ResponseEntity<>(rolesDtos, HttpStatus.OK);
-        } catch (Exception e) {
-            log.info("error mess", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            return new ResponseEntity<List<RoleDto>>(rolesDtos, HttpStatus.OK);
+
 
     }
 
-    @PostMapping("/security/user/signin")
+    @PostMapping("/public/user/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDto loginRequestDto) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
@@ -122,8 +116,11 @@ public class UserController {
         ));
     }
 
-    @PostMapping("/security/user/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequestDto signUpRequestDto) {
+    @PostMapping("/public/user/signup")
+    public ResponseEntity<?> registerUser(@RequestBody SignupRequestDto signUpRequestDto) {
+
+
+
         if (userService.existsByUsername(signUpRequestDto.getUsername())) {
             return ResponseEntity
                     .badRequest()
@@ -153,24 +150,28 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponseDto("Compte créé avec succes!"));
     }
 
-    @GetMapping("/security/user/{id}")
-    public ResponseEntity<UserDto> editUser(@PathVariable Integer id) {
-//        Evenement evenementdto = evenementService.getEvenementById(id);
+    @GetMapping("/private/user/{id}")
+    public ResponseEntity<?> editUser(@PathVariable Integer id) {
         UserDto userDto = userMapper.toDto(userService.getUserById(id));
-        if (userDto != null) {
+            return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
+    }
+    @GetMapping("/private/user/username/{username}")
+    public ResponseEntity<?> editUserByUsern(@PathVariable String username) {
+//
+        UserDto userDto = userMapper.toDto(userService.getUserByUsername(username));
             return new ResponseEntity<>(userDto, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
     @DeleteMapping("/security/user/delete/{id}")
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable Integer id) {
-        try {
-            userService.deleteUser(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
+
+        userService.deleteUser(id);
+        return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
     }
+    @PostMapping("/signout")
+    public ResponseEntity<Void> signOut(@AuthenticationPrincipal UserDto user) {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.noContent().build();
+    }
+//
+
 }

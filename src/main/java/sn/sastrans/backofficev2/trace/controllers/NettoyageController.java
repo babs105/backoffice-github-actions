@@ -26,6 +26,7 @@ import java.util.*;
 @Slf4j
 @CrossOrigin(origins = "*")
 @RestController
+
 public class NettoyageController {
 
     @Autowired

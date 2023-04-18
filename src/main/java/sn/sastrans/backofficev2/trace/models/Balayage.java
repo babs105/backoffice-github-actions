@@ -42,7 +42,7 @@ public class Balayage  extends Auditable<String> {
     private String heureFinBalayage;
     private String pkdebutBalayage;
     private String pkfinBalayage;
-
+    private String lineaire;
     private String autoroute;
     private String sens;
     private String voie;

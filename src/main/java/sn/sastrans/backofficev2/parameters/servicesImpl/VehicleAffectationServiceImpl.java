@@ -54,11 +54,11 @@ public class VehicleAffectationServiceImpl implements VehicleAffectationService 
     @Override
     public void deleteVehicleAffection(int id) {
        log.info("in del");
-        VehicleAffectation vhlaff =  vehicleAffectionRepository.findById(id).orElse(null);
-        log.info("in del" +vhlaff.getId())     ;
-        for(Vehicle vehicle: vhlaff.getVehicles()){
-            vehicle.setVehicleaffectationid(null);
-        }
+//        VehicleAffectation vhlaff =  vehicleAffectionRepository.findById(id).orElse(null);
+//        log.info("in del" +vhlaff.getId())     ;
+//        for(Vehicle vehicle: vhlaff.getVehicles()){
+//            vehicle.setVehicleaffectationid(null);
+//        }
 //        log.info("in del" +vhlaff);
         vehicleAffectionRepository.deleteById(id);
         }

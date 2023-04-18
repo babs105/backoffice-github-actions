@@ -31,7 +31,7 @@ public class Station implements Serializable {
     @Column(name = "stationname",nullable = false,unique = true)
     private String stationName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "locationid",insertable = false,updatable = false)
     private Location location;
     private Integer locationid;

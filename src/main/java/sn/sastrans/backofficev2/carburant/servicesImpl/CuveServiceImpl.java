@@ -28,6 +28,8 @@ public class CuveServiceImpl implements CuveService {
 
     @Override
     public Page<Cuve> getAllCuveByKeyword(String keyword, Pageable pageable) {
+
+
         return cuveRepository.findByKeyword(keyword,pageable);
     }
 

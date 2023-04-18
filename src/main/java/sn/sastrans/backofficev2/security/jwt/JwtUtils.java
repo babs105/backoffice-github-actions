@@ -1,10 +1,14 @@
 package sn.sastrans.backofficev2.security.jwt;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.*;
 import sn.sastrans.backofficev2.security.models.UserPrincipal;
@@ -22,8 +26,9 @@ public class JwtUtils {
     public String generateJwtToken(Authentication authentication) {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-
+//        Claims claims = Jwts.claims().setSubject(userPrincipal.getUsername());
         return Jwts.builder()
+//                .setClaims(claims)
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))

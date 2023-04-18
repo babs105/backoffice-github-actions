@@ -29,7 +29,7 @@ import java.util.Map;
 
 @Slf4j
 @CrossOrigin(origins = "*")
-@RestController 
+@RestController
 public class CuveController {
 
     @Autowired
@@ -40,7 +40,6 @@ public class CuveController {
     @GetMapping("/carburant/cuves")
     public ResponseEntity<Map<String, Object>> getAllCuves(@RequestParam(required = false) String title, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
 
-        try {
             List<Cuve> cuves = new ArrayList<Cuve>();
             Pageable paging = PageRequest.of(page, size, Sort.by("id").descending());
 
@@ -57,62 +56,41 @@ public class CuveController {
             response.put("totalPages", pagecuves.getTotalPages());
 
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            log.info("error mess", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
     @GetMapping("/carburant/cuve/{id}")
-    public Cuve getById(@PathVariable Integer id) {
-        return cuveService.getCuveById(id);
+    public ResponseEntity<CuveDto>  getById(@PathVariable Integer id) {
+         CuveDto  cuveDto = cuveMapper.toDto(cuveService.getCuveById(id));
+         return new ResponseEntity<>(cuveDto, HttpStatus.OK);
     }
 
 
     @PostMapping("/carburant/cuves")
     public ResponseEntity<CuveDto> addCuve(@RequestBody @Valid CuveDto cuveDto) {
 
-        try {
             Cuve cuveSaved = cuveService.saveCuve(cuveMapper.toEntity(cuveDto));
             CuveDto cuve = cuveMapper.toDto(cuveSaved);
             return new ResponseEntity<>(cuve, HttpStatus.OK);
-        } catch (Exception e) {
-            log.info("error mess", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
 
     }
 
     @PutMapping("/carburant/cuve/update/{id}")
     public ResponseEntity<CuveDto> updateCuve(@PathVariable Integer id, @RequestBody @Valid CuveDto cuveDto) {
 
-        try {
             Cuve cuveEntity = cuveMapper.toEntity(cuveDto);
             cuveEntity.setId(id);
             Cuve cuveSaved = cuveService.saveCuve(cuveEntity);
-
-            if (cuveSaved != null) {
-                return new ResponseEntity<>(cuveDto, HttpStatus.OK);
-//                return ResponseEntity.status(HttpStatus.ACCEPTED).body(cuveDto);
-            }
-            else  return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e) {
-            log.info("error mess", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            return new ResponseEntity<>(cuveDto, HttpStatus.OK);
 
     }
 
 
     @DeleteMapping("/carburant/cuve/delete/{id}")
     public ResponseEntity<HttpStatus> deleteCuve(@PathVariable Integer id) {
-        try {
             cuveService.deleteCuve(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
    

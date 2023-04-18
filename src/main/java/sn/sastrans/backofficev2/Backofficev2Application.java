@@ -1,5 +1,6 @@
 package sn.sastrans.backofficev2;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -14,6 +15,11 @@ import sn.sastrans.backofficev2.security.SpringSecurityAuditorAware;
 public class Backofficev2Application {
 //		extends SpringBootServletInitializer {
 
+
+	@Bean
+	public ModelMapper modelMapper(){
+		return new ModelMapper();
+	}
 	@Bean
 	public AuditorAware<String> auditorAware() {
 		return new SpringSecurityAuditorAware();

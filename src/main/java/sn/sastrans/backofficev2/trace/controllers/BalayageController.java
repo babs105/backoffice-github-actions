@@ -27,6 +27,7 @@ import java.util.*;
 @Slf4j
 @CrossOrigin(origins = "*")
 @RestController
+
 public class BalayageController {
 
     @Autowired
@@ -63,12 +64,7 @@ public class BalayageController {
     @PostMapping("/trace/balayages")
     public ResponseEntity<BalayageDto> addBalayage(@RequestBody @Valid BalayageDto balayageDto) {
         try {
-//            if((balayageDto.getDatePose()!=null) && (balayageDto.getDateDepose() == null )){
-//                balayageDto.setEtatBalayage("En Cours");
-//            }
-//            if  ((balayageDto.getDatePose()!=null) && (balayageDto.getDateDepose()!= null )){
-//                balayageDto.setEtatBalayage("Terminer");
-//            }
+
             Balayage bal = balayageService.saveBalayage(balayageMapper.toEntity(balayageDto));
             BalayageDto balDto =  balayageMapper.toDto(bal);
 

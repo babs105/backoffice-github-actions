@@ -23,6 +23,7 @@ import java.util.Map;
 @Slf4j
 @CrossOrigin(origins = "*")
 @RestController
+
 public class DetailAccidentController {
 
     @Autowired

@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface UserService {
     User saveUser(User user);
+    User getUserByUsername(String username);
     Page<User> getAllUser(Pageable pageable);
     Page<User> getAllUserByKeyword(String keyword, Pageable pageable);
     User getUserById(int id);

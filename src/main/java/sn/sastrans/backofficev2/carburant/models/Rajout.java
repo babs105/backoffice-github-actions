@@ -37,7 +37,7 @@ public class Rajout  implements Serializable {
 //    @JoinColumn(name="cuveid", insertable=false, updatable=false)
 //    private Cuve cuve;
 //    private Integer cuveid;
-     @ManyToOne
+     @ManyToOne(fetch = FetchType.LAZY)
      @JoinColumn(name="cuveid", referencedColumnName = "cuvename",insertable=false, updatable=false)
      private Cuve cuve;
      private String cuveid;
@@ -47,7 +47,7 @@ public class Rajout  implements Serializable {
 //    private Station station;
 //    private Integer stationid;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="stationid", referencedColumnName = "stationname",insertable=false, updatable=false)
     private Station station;
     private String stationid;

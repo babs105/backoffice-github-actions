@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import sn.sastrans.backofficev2.trace.dto.EventSearchDTO;
+import sn.sastrans.backofficev2.trace.dto.EventSearchExcelRequestDto;
+import sn.sastrans.backofficev2.trace.dto.EventSearchRequestDto;
 import sn.sastrans.backofficev2.trace.models.Evenement;
 import sn.sastrans.backofficev2.trace.repositories.EvenementRepository;
 import sn.sastrans.backofficev2.trace.services.EvenementService;
 
 import java.util.List;
+
 @Service
 public class EvenementServiceImpl  implements EvenementService {
 
@@ -21,12 +23,12 @@ public class EvenementServiceImpl  implements EvenementService {
             if(evenement.getStatutEvent().equalsIgnoreCase("assiste et reparti seul")
                     ||evenement.getStatutEvent().equalsIgnoreCase("remorque")
                     ||evenement.getStatutEvent().equalsIgnoreCase("annule")){
-                            evenement.setEtatEvent("Terminer-A-debaliser");
+                evenement.setEtatEvent("Terminer-A-debaliser");
             }
-            if(evenement.getStatutEvent().equalsIgnoreCase("reparti seul")){
+            else if(evenement.getStatutEvent().equalsIgnoreCase("reparti seul")){
                 evenement.setEtatEvent("Terminer");
             }
-            if(evenement.getStatutEvent().equalsIgnoreCase("asuivre")){
+            else if(evenement.getStatutEvent().equalsIgnoreCase("asuivre")){
                 evenement.setEtatEvent("En Cours");
             }
 
@@ -34,8 +36,12 @@ public class EvenementServiceImpl  implements EvenementService {
         else if((evenement.getDateheurePoseBalise()!=null) && (evenement.getDateheureDeposeBalise() != null )){
             if(evenement.getStatutEvent().equalsIgnoreCase("assiste et reparti seul")
                     ||evenement.getStatutEvent().equalsIgnoreCase("remorque")
-                    ||evenement.getStatutEvent().equalsIgnoreCase("annule")){
+                    ||evenement.getStatutEvent().equalsIgnoreCase("annule")||
+                    evenement.getStatutEvent().equalsIgnoreCase("reparti seul")
+            ){
                 evenement.setEtatEvent("Terminer");
+            }else{
+                evenement.setEtatEvent("En Cours");
             }
         }
         else if(evenement.getStatutEvent().equalsIgnoreCase("reparti seul")||
@@ -43,11 +49,9 @@ public class EvenementServiceImpl  implements EvenementService {
                 ||evenement.getStatutEvent().equalsIgnoreCase("remorque")
                 ||evenement.getStatutEvent().equalsIgnoreCase("annule")){
                     evenement.setEtatEvent("Terminer");
-        }
-     else{
+        }else{
             evenement.setEtatEvent("En Cours");
         }
-
         return evenementRepository.save(evenement);
     }
 
@@ -63,19 +67,42 @@ public class EvenementServiceImpl  implements EvenementService {
 
 
     @Override
-    public Evenement getEvenementById(int id) {
-        return evenementRepository.findById(id).orElse(null);
+    public Evenement getEvenementById(Integer id) {
+
+        return evenementRepository.findById(id).get();
     }
 
     @Override
-    public List<Evenement> searchEvenement(EventSearchDTO critere) {
-        return evenementRepository.searchEvenement(critere);
+    public Page<Evenement> searchEvenement(EventSearchRequestDto critere,Pageable paging ){
+        return evenementRepository.searchEvenement(critere,paging);
+
+    }
+    public Evenement updateEvenement(Integer id, Evenement event) {
+
+        Evenement eventSaved = evenementRepository.findById(id).get();
+          if(eventSaved!=null){
+              event.setId(id);
+
+          }
+
+      return   saveEvenement(event);
+
 
     }
 
     @Override
-    public void deleteEvenement(int id) {
-        evenementRepository.deleteById(id);
+    public List<Evenement> searchEvenementExcel(EventSearchExcelRequestDto critere) {
+        return evenementRepository.searchEvenementExcel(critere);
+    }
+
+    @Override
+    public Evenement deleteEvenement(Integer id) {
+     Evenement event = evenementRepository.findById(id).get();
+     if(event!=null) {
+         evenementRepository.deleteById(id);
+         return event;
+     }
+     return null;
 
     }
 }

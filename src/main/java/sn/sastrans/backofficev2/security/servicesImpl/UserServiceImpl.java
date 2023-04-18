@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import sn.sastrans.backofficev2.exception.BadRequestException;
 import sn.sastrans.backofficev2.security.models.User;
 import sn.sastrans.backofficev2.security.repositories.UserRepository;
 import sn.sastrans.backofficev2.security.services.UserService;
@@ -20,7 +21,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
+        if(user.getUsername().isEmpty() || user.getUsername().length()==0 ){
+            throw new BadRequestException("L'Email ou le Mot de passe ne doit pas être vide");
+        }
         return userRepository.save(user);
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
 
@@ -36,8 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(int id) {
-        return userRepository.findById(id).orElse(null
-        );
+        return userRepository.findById(id).get();
     }
 
     @Override

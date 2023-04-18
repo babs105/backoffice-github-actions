@@ -17,9 +17,11 @@ public interface BalayageMapper extends EntityMapper<BalayageDto, Balayage>{
 
 //    @Mapping(source = "Balayage.causeEvent",target="cause")
 //    @Mapping(target = "longBalisage", expression = "java(sn.sastrans.backofficev2.trace.utils.TraceUtil.distanceBetweenPka(Balayage.getPkDebutBalisage(), Balayage.getPkFinBalisage()))")
-//    @Mapping(target = "nomPAT", expression = "java(Balayage.getNomPAT().isEmpty() ? \"NON\":Balayage.getNomPAT())")
-//   @Mapping(target = "datePose", expression = "java(sn.sastrans.backofficev2.trace.utils.TraceUtil.formatLocalDateTimeToString(balayage.getDatePose()))")
-//   @Mapping(target = "dateDepose", expression = "java(sn.sastrans.backofficev2.trace.utils.TraceUtil.formatLocalDateTimeToString(balayage.getDateDepose()))")
+   @Mapping(target = "pkdebutBalayage", expression = "java(balayage.getPkdebutBalayage().isEmpty() ? \"NON\":balayage.getPkdebutBalayage())")
+   @Mapping(target = "pkfinBalayage", expression = "java(balayage.getPkfinBalayage().isEmpty() ? \"NON\":balayage.getPkfinBalayage())")
+   @Mapping(target = "heureDebutBalayage", expression = "java(balayage.getHeureDebutBalayage().isEmpty() ? \"NON\":balayage.getHeureDebutBalayage())")
+   @Mapping(target = "heureFinBalayage", expression = "java(balayage.getHeureFinBalayage().isEmpty() ? \"NON\":balayage.getHeureFinBalayage())")
+   @Mapping(target = "lineaire", expression = "java(sn.sastrans.backofficev2.trace.utils.TraceUtil.distanceBetweenPka(balayage.getPkdebutBalayage(), balayage.getPkfinBalayage()))")
     BalayageDto toDto(Balayage balayage);
 
     @InheritInverseConfiguration

@@ -17,6 +17,7 @@ import javax.validation.Valid;
 @Slf4j
 @CrossOrigin(origins = "*")
 @RestController
+
 public class StationController {
 
     @Autowired

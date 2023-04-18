@@ -18,6 +18,7 @@ import sn.sastrans.backofficev2.parameters.services.VehicleModelService;
 import javax.validation.Valid;
 
 @Controller
+
 public class VehicleModelController {
 
     @Autowired

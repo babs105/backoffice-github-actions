@@ -66,7 +66,7 @@ public class Vehicle extends Auditable<String> implements Serializable{
 //	private VehicleCategory vehicleCategory;
 //	private Integer vehiclecategoryid;
 //
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
 	@JoinColumn(name="vehicleaffectationid", referencedColumnName = "title", insertable = false, updatable = false)
 	private VehicleAffectation vehicleAffectation;
 	private String vehicleaffectationid;

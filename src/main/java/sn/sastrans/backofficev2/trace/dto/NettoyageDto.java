@@ -20,6 +20,7 @@ public class NettoyageDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
     private String typeNettoyage;
+    private String typeBalisage;
     @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm")
     private LocalDateTime datePose;
     @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm")
@@ -30,6 +31,8 @@ public class NettoyageDto {
     private String heureFin;
     private String pkdebut;
     private String pkfin;
+    private String lieu;
+    private String autoroute;
     private String sens;
     private String voie;
     private String zone;
