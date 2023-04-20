@@ -37,7 +37,7 @@ public class EvenementControllerIT {
 
     private static  final String END_POINT_PATH="/trace/evenements";
 
-    private String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWJhY2FyLmRpZW5nNDFAZ21haWwuY29tIiwiaWF0IjoxNjgxNjY2OTgwLCJleHAiOjE2ODE3NTMzODB9.qju-R8rJn72TQM9fLRXKH3WKbliMsqjygrF_N1qNIsK26P9ZoBcEy51I8fFrkTvIuUVhMfAdZXM4oEI11V6tWA";
+    private String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWJhY2FyLmRpZW5nNDFAZ21haWwuY29tIiwiaWF0IjoxNjgxOTg0MjM2LCJleHAiOjE2ODIwNzA2MzZ9.ce6OXTLL-dXeV15wpnyCftx5qgQmELT0JVO7B9Z47ze0e2zXvYheYhyGoSfzy_w8B56f7ogYsEscDaIEmRJODA";
     ;
     private String invalidToken="badToken";
     @Autowired
