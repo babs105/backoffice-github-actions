@@ -45,7 +45,7 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Build and Test for TEST profile
-        run: mvn clean test -Dspring.profiles.active=TEST
+        run: mvn clean verify -Dspring.profiles.active=TEST
 
   test-with-db-push-docker:
     needs: test-without-db

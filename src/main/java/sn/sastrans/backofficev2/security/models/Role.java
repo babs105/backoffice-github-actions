@@ -11,6 +11,7 @@ import java.util.Set;
 @Entity
 @Setter
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE role SET deleted = true WHERE id = ?")

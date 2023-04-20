@@ -64,19 +64,25 @@ public class UserController {
     @GetMapping("/security/users")
     public ResponseEntity<?> getAllUsers(@RequestParam(required = false) String title, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
 
-            List<User> users = new ArrayList<User>();
+            List<UserDto> usersDto = new ArrayList<UserDto>();
             Pageable paging = PageRequest.of(page, size);
-
             Page<User> pageUsers;
-            if (title == null) pageUsers = userService.getAllUser(paging);
-            else pageUsers = userService.getAllUserByKeyword(title, paging);
+        if (title.length()>0) {
+            pageUsers = userService.getAllUserByKeyword(title,paging);
+        }else{
+            pageUsers = userService.getAllUser(paging);
+        }
+//
+//        if (title == null) pageUsers = userService.getAllUser(paging);
+//            else pageUsers = userService.getAllUserByKeyword(title, paging);
 
-            users = pageUsers.getContent();
+            usersDto = userMapper.toDto(pageUsers.getContent());
 
             Map<String, Object> response = new HashMap<>();
-            response.put("users", userMapper.toDto(users));
+            response.put("users", usersDto);
             response.put("currentPage", pageUsers.getNumber());
             response.put("totalItems", pageUsers.getTotalElements());
+            response.put("pageSize", pageUsers.getPageable().getPageSize());
             response.put("totalPages", pageUsers.getTotalPages());
 
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);

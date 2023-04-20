@@ -4,16 +4,10 @@ package sn.sastrans.backofficev2.traceTest.evenementTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.Mapping;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
-import sn.sastrans.backofficev2.trace.dto.EvenementDto;
-import sn.sastrans.backofficev2.trace.mappers.EvenementMapper;
-import sn.sastrans.backofficev2.trace.mappers.EvenementMapperImpl;
 import sn.sastrans.backofficev2.trace.models.Evenement;
 import sn.sastrans.backofficev2.trace.repositories.EvenementRepository;
 import sn.sastrans.backofficev2.trace.services.EvenementService;
@@ -32,7 +26,6 @@ public class EvenementServiceTest {
     @InjectMocks
     private static  EvenementService  evenementService ;
 //            = new EvenementServiceImpl();
-
 
     @Mock
     private EvenementRepository evenementRepository;
