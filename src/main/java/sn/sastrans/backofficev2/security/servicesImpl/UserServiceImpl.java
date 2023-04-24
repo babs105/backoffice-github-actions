@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import sn.sastrans.backofficev2.exception.BadRequestException;
+import sn.sastrans.backofficev2.exception.EmailExistException;
+import sn.sastrans.backofficev2.exception.RoleNotFoundException;
 import sn.sastrans.backofficev2.security.models.User;
 import sn.sastrans.backofficev2.security.repositories.UserRepository;
 import sn.sastrans.backofficev2.security.services.UserService;
@@ -23,6 +25,9 @@ public class UserServiceImpl implements UserService {
     public User saveUser(User user) {
         if(user.getUsername().isEmpty() || user.getUsername().length()==0 ){
             throw new BadRequestException("L'Email ou le Mot de passe ne doit pas être vide");
+        }
+        if(existsByUsername(user.getUsername())){
+            throw new EmailExistException("L'Email existe déjà");
         }
         return userRepository.save(user);
     }
@@ -56,5 +61,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public User updateUser(Integer id, User user) {
+
+        User userToUpdate = userRepository.findById(id).get();
+        if(userToUpdate!=null){
+            userToUpdate.setId(id);
+
+        }
+
+        return  userRepository.save(userToUpdate);
     }
 }

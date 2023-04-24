@@ -1,6 +1,8 @@
 package sn.sastrans.backofficev2.traceTest.evenementTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,11 +17,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import sn.sastrans.backofficev2.security.models.UserPrincipal;
 import sn.sastrans.backofficev2.trace.dto.EvenementDto;
 import sn.sastrans.backofficev2.trace.models.Evenement;
 
 
 import java.util.Calendar;
+import java.util.Date;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,10 +40,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class EvenementControllerIT {
 
     private static  final String END_POINT_PATH="/trace/evenements";
+    private static final String jwtSecret = "bezKoderSecretKey";
+//    private String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWJhY2FyLmRpZW5nNDFAZ21haWwuY29tIiwiaWF0IjoxNjgyMDk4NTMzLCJleHAiOjE2ODIxODQ5MzN9.7bjT3_6nC9CcmsdgnH0tMIEQ97Deyd9RdMo-1237tk0S3oHf5ngmlvg449PWV5HlQtuh6gseQxjfAA6Kvj1ypA";
 
-    private String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWJhY2FyLmRpZW5nNDFAZ21haWwuY29tIiwiaWF0IjoxNjgxOTg0MjM2LCJleHAiOjE2ODIwNzA2MzZ9.ce6OXTLL-dXeV15wpnyCftx5qgQmELT0JVO7B9Z47ze0e2zXvYheYhyGoSfzy_w8B56f7ogYsEscDaIEmRJODA";
-    ;
-    private String invalidToken="badToken";
     @Autowired
     private MockMvc mockMvc;
 
@@ -63,7 +66,7 @@ public class EvenementControllerIT {
                         .param("page","0")
                         .param("size","5")
 //                        .contentType(MediaType.APPLICATION_JSON)
-                       .header("Authorization", "Bearer " + token))
+                       .header("Authorization", "Bearer " + createToken("babacar.dieng41@gmail.com")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalItems").value(1))
                 .andExpect(jsonPath("$.evenements.size()").value(1))
@@ -95,12 +98,24 @@ public class EvenementControllerIT {
         //when
         mockMvc.perform(post(END_POINT_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token)
+                        .header("Authorization", "Bearer " + createToken("babacar.dieng41@gmail.com"))
                         .content(requestBody))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location",is("/trace/evenement/edit/9")))
                 .andDo(print());
 
     }
+    private String createToken(String username) {
 
+//        Claims claims = Jwts.claims().setSubject(userPrincipal.getUsername());
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + 3600000L); // 1 hour
+        return Jwts.builder()
+//                .setClaims(claims)
+                .setSubject(username)
+                .setIssuedAt(now)
+                .setExpiration(expiration)
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
+    }
 }

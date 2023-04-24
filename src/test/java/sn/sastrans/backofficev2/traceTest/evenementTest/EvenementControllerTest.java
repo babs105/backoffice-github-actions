@@ -255,6 +255,7 @@ public class EvenementControllerTest {
         eventDto.setHeureAppelOPC("08:32");
         eventDto.setNomPAT("Aly KA");
         eventDto.setStatutEvent("assiste et reparti seul");
+
         when(evenementMapper.toDto(event)).thenReturn(eventDto);
         when(evenementMapper.toEntity(eventDto)).thenReturn(event);
         when(evenementService.saveEvenement(any())).thenReturn(event);

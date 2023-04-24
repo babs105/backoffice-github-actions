@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +29,8 @@ import sn.sastrans.backofficev2.security.models.UserPrincipal;
 import sn.sastrans.backofficev2.security.services.RoleService;
 import sn.sastrans.backofficev2.security.services.UserService;
 import org.springframework.security.core.Authentication;
+import sn.sastrans.backofficev2.trace.dto.EvenementDto;
+import sn.sastrans.backofficev2.trace.models.Evenement;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -62,10 +66,10 @@ public class UserController {
 //        return "security/users";
 //    }
     @GetMapping("/security/users")
-    public ResponseEntity<?> getAllUsers(@RequestParam(required = false) String title, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+    public ResponseEntity<?> getAllUsers(@RequestParam(required = false,defaultValue = "") String title, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
 
-            List<UserDto> usersDto = new ArrayList<UserDto>();
-            Pageable paging = PageRequest.of(page, size);
+        Pageable paging = PageRequest.of(page, size);
+        List<UserDto> usersDto = new ArrayList<UserDto>();
             Page<User> pageUsers;
         if (title.length()>0) {
             pageUsers = userService.getAllUserByKeyword(title,paging);
@@ -104,22 +108,35 @@ public class UserController {
     @PostMapping("/public/user/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDto loginRequestDto) {
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(),loginRequestDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
+//        List<GrantedAuthority> authorities = new ArrayList<>(authentication.getAuthorities());
+         User user = userService.getUserByUsername(authentication.getName());
+//        UserPrincipal userDetail = (UserPrincipal) authentication.getPrincipal();
+//        List<String> roles = userDetail.getAuthorities().stream()
+//                .map(item -> item.getAuthority())
+//                .collect(Collectors.toList());
+//                List<String> roles = authorities.stream()
+//                .map(item -> item.getAuthority())
+//                .collect(Collectors.toList());
+
+//                log.info("Roles "+roles.toString());
+//                log.info("authorities "+authorities.toString());
 
         return ResponseEntity.ok(new JwtResponseDto(jwt,
-                userDetails.getFirstName(),
-                userDetails.getLastName(),
-                userDetails.getUsername(),
-                roles
-        ));
+                "Bearer", user.getFirstname(),
+                user.getLastname(),
+                user.getUsername(),
+                user.getRoles().stream().map(role ->role.getName()).collect(Collectors.toList())));
+
+//        return ResponseEntity.ok(new JwtResponseDto(jwt,
+//                "Bearer", userDetail.getUser().getFirstname(),
+//                userDetail.getUser().getLastname(),
+//                userDetail.getUsername(),
+//                roles));
     }
 
     @PostMapping("/public/user/signup")
@@ -127,12 +144,11 @@ public class UserController {
 
 
 
-        if (userService.existsByUsername(signUpRequestDto.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponseDto("Error: Email is already taken!"));
-        }
-
+//        if (userService.existsByUsername(signUpRequestDto.getUsername())) {
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponseDto("Error: Email is already taken!"));
+//        }
 
         // Create new user's account
         User user = new User(signUpRequestDto.getFirstname(), signUpRequestDto.getLastname(), signUpRequestDto.getUsername(), encoder.encode(signUpRequestDto.getPassword()));
@@ -142,10 +158,10 @@ public class UserController {
 
         if (strRoles == null) {
           Role userRole = roleService.getRoleByName("USER");
-//            Role userRole = new Role(2,"USER","access to home page");
-            if (userRole == null) {
-                throw new RuntimeException("Error: Role is not found.");
-            }
+////            Role userRole = new Role(2,"USER","access to home page");
+//            if (userRole == null) {
+//                throw new RuntimeException("Error: Role is not found.");
+//            }
 
             roles.add(userRole);
         }
@@ -157,12 +173,23 @@ public class UserController {
     }
 
     @GetMapping("/private/user/{id}")
-    public ResponseEntity<?> editUser(@PathVariable Integer id) {
+    public ResponseEntity<?> getUserById(@PathVariable Integer id) {
         UserDto userDto = userMapper.toDto(userService.getUserById(id));
             return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
     }
+    @PutMapping("/private/user/update/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody @Valid User user) {
+
+
+//        UserDto userDto = userMapper.toDto(userService.updateUser(id,user));
+        User userUpdated = userService.updateUser(id,user);
+
+        return new ResponseEntity<User>(userUpdated, HttpStatus.CREATED);
+//        UserDto userDto = userMapper.toDto(userService.getUserById(id));
+//        return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
+    }
     @GetMapping("/private/user/username/{username}")
-    public ResponseEntity<?> editUserByUsern(@PathVariable String username) {
+    public ResponseEntity<?> editUserByUsername(@PathVariable String username) {
 //
         UserDto userDto = userMapper.toDto(userService.getUserByUsername(username));
             return new ResponseEntity<>(userDto, HttpStatus.OK);

@@ -1,53 +1,32 @@
 package sn.sastrans.backofficev2.security.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class JwtResponseDto {
 
 
     private String token;
-    private String type = "Bearer";
+    private String type ;
     private String firstName;
     private String lastName;
     private String username;
 
     private List<String> roles;
 
-    public JwtResponseDto(String accessToken, String firstName, String lastName, String username, List<String> roles) {
-        this.token = accessToken;
-        this.firstName=firstName;
-        this.lastName=lastName;
-        this.username = username;
-        this.roles = roles;
-    }
+//    public JwtResponseDto(String accessToken, String firstName, String lastName, String username, List<String> roles) {
+//        this.token = accessToken;
+//        this.firstName=firstName;
+//        this.lastName=lastName;
+//        this.username = username;
+//        this.roles = roles;
+//    }
 
-    public String getAccessToken() {
-        return token;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.token = accessToken;
-    }
-
-    public String getTokenType() {
-        return type;
-    }
-
-    public void setTokenType(String tokenType) {
-        this.type = tokenType;
-    }
-
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
 
 
 }

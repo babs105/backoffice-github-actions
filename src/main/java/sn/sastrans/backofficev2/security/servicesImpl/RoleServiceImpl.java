@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import sn.sastrans.backofficev2.exception.RoleNotFoundException;
 import sn.sastrans.backofficev2.security.models.Role;
 import sn.sastrans.backofficev2.security.models.User;
 import sn.sastrans.backofficev2.security.repositories.RoleRepository;
@@ -44,7 +45,12 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getRoleByName(String rolename) {
-        return roleRepository.findByName(rolename);
+        Role role = roleRepository.findByName(rolename);
+        if(role==null){
+            throw new RoleNotFoundException("Role n'existe pase");
+        }
+        return role;
+
     }
 
     @Override
